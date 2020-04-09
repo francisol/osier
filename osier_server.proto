@@ -1,0 +1,75 @@
+syntax = "proto3";
+service OsierServer {
+    rpc create (CreateRequest) returns (SimpleResponse) {}
+    rpc list(ListRequest) returns(ListResponse){}
+    rpc restart(NameMessage) returns(SimpleResponse){}
+    rpc remove(NameMessage) returns(SimpleResponse){}
+    rpc detail(NameMessage) returns(DetailResponse){}
+    rpc serverStatus(EmptyMessage) returns(ServerStatusResponse){}
+
+}
+
+message  ServerStatusResponse{
+    int32 core_num=1;
+    int32 current_num=2;
+    int32 current_task=3;
+}
+
+message EmptyMessage{
+
+}
+
+message SimpleResponse {
+    bool status = 1;
+    string msg=2;
+}
+
+message CreateRequest {
+    string name = 1;
+    int32 priority =2 ;
+    string base_dir=3;
+    int32 core_num=4;
+    string username=5;
+}
+
+message TaskMessage {
+    string name = 1;
+    int32 priority =2 ;
+    string base_dir=3;
+    int32 core_num=4;
+    string username=5;
+    string created_at=6;
+    string finished_at=7;
+    TaskStatus status=8;
+    int32 id=9;
+    string msg=10;
+    enum TaskStatus {
+        Wait=0;
+        Doing=1;
+        Done=2;
+        Error=3;
+    };
+}
+
+message CreateResponse {
+    bool status = 1;
+}
+message ListRequest {
+    int32 start =1 ;
+    int32 end=2;
+}
+
+message ListResponse {
+    bool status = 1;
+    string msg=2;
+    repeated TaskMessage data = 3;
+}
+message NameMessage{
+    string name=1;
+}
+
+message DetailResponse{
+    bool status = 1;
+    string msg=2;
+    TaskMessage data=3;
+}

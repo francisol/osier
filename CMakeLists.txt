@@ -1,0 +1,25 @@
+cmake_minimum_required(VERSION 3.15)
+project(osier)
+set(CMAKE_CXX_STANDARD 17)
+add_subdirectory(sqlite)
+add_subdirectory(lua)
+add_subdirectory(path)
+add_subdirectory(lfs)
+IF (WIN32)
+    # nothing to do
+ELSEIF (APPLE)
+    # nothing to do
+ELSEIF (UNIX)
+    set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++ ${CMAKE_EXE_LINKER_FLAGS}")
+ENDIF ()
+
+add_subdirectory(yaml-cpp)
+include_directories(yaml-cpp/include)
+include_directories(lua)
+find_package(Protobuf REQUIRED)
+find_package(gRPC CONFIG REQUIRED)
+add_executable(osier-server server.cpp config.cpp db.cpp db.h lua_extend.c osier_server.pb.cc osier_server.grpc.pb.cc lua_extend.h process.cpp process.h controller.cpp controller.h runner.cpp runner.h interface_controller.cpp interface_controller.h arg_scrpit.cpp arg_scrpit.h osier_server.cpp osier_server.h)
+target_link_libraries(osier-server stdc++fs  sqlite lua yaml-cpp lfs lfs path ${PROTOBUF_LIBRARIES} grpc++_reflection gRPC::grpc++)
+
+add_executable(osier-cli cli.cpp CLI11.hpp osier_server.pb.cc osier_client.cpp osier_server.grpc.pb.cc)
+target_link_libraries(osier-cli stdc++fs yaml-cpp grpc++_reflection.a  ${PROTOBUF_LIBRARIES}  gRPC::grpc++)
