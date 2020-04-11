@@ -1,6 +1,6 @@
 #include <iostream>
 #include "CLI11.hpp"
-#include "config.h"
+#include "server_config.h"
 #include <filesystem>
 #include <dirent.h>
 #include <unistd.h>

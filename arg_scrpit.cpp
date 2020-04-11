@@ -3,7 +3,7 @@
 //
 
 #include "arg_scrpit.h"
-#include "config.h"
+#include "server_config.h"
 #include "lua/lua.hpp"
 #include "lua_extend.h"
 #include <exception>

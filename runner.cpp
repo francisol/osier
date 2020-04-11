@@ -5,7 +5,7 @@
 #include "runner.h"
 #include "yaml-cpp/yaml.h"
 #include <filesystem>
-#include "config.h"
+#include "server_config.h"
 #include <fstream>
 #include "mustache.hpp"
 #include "process.h"

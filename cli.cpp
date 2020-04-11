@@ -3,6 +3,18 @@
 #include "osier_client.h"
 #include "yaml-cpp/yaml.h"
 #include <unistd.h>
+#include <pwd.h>
+
+#ifndef PARSE_Node
+#define PARSE_Node(name, type)                                                                          \
+    if (node[#name]) {\
+        request.set_##name(node[#name].as<type>());\
+    } else {\
+        cout << "file must has " << #name <<endl;\
+        exit(0);\
+    }
+#endif
+
 using namespace std;
 int port=1115;
 
@@ -10,6 +22,12 @@ typedef struct {
     string base_dir;
 }CreateCMD;
 void create(CreateCMD&createCmd) {
+    struct passwd *pw;
+    uid_t  uid =getuid();
+    errno = 0;
+    uid = geteuid ();
+    pw = (uid == 0 && errno ? NULL : getpwuid (uid));
+    string username=  pw->pw_name;
     char buff[1024];
     filesystem::path temp =getcwd(buff,1024);
     temp.append(createCmd.base_dir);
@@ -24,34 +42,13 @@ void create(CreateCMD&createCmd) {
         path.append(item.string());
     }
     CreateRequest request;
-    FILE *fp= popen("whoami","r");
-    char  buf[65];
-    string username=  fgets(buf,64,fp);
-    pclose(fp);
-    username.pop_back();
     request.set_base_dir(path);
     request.set_username(username);
-    cout<<path<<endl;
     path.append("task.yaml");
     YAML::Node node = YAML::LoadFile(path);
-    if (node["name"]) {
-        request.set_name(node["name"].as<string>());
-    } else {
-        cout << "file must has name";
-        exit(0);
-    }
-    if (node["core_num"]) {
-        request.set_core_num(node["core_num"].as<int>());
-    } else {
-        cout << "file must has core_num";
-        exit(0);
-    }
-    if (node["priority"]) {
-        request.set_priority(node["priority"].as<int>());
-    } else {
-        cout << "file must has priority";
-        exit(0);
-    }
+    PARSE_Node(name,string)
+    PARSE_Node(core_num,int)
+    PARSE_Node(priority,int)
     string target_str = "127.0.0.1:";
     target_str.append(to_string(port));
     osier_client client(port);
@@ -107,15 +104,15 @@ int main(int argc, char** argv) {
     string name;
     int start = 0;
     int end = 10;
-    CLI::App app{"App description", "ss"};
+    CLI::App app{"CLI for osier-server", "oiser-cli"};
     CreateCMD createCMD;
-    app.add_option("--port", port, "xxx", true);
-    CLI::App *createApp = app.add_subcommand("create", "ccccc")
+    app.add_option("--port", port, "port of osier server", true);
+    CLI::App *createApp = app.add_subcommand("create", "create new task")
             ->ignore_case()
             ->callback([&createCMD]() {
                 create(createCMD);
             });
-    createApp->add_option("--base_dir", createCMD.base_dir, "base_dir");
+    createApp->add_option("--base_dir", createCMD.base_dir, "cli will find task.yaml in this");
 
     CLI::App *listApp = app.add_subcommand("list", "show tasks")->callback([start, end]() {
         _list(start, end);

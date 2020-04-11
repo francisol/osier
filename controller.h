@@ -8,7 +8,7 @@
 #include "interface_controller.h"
 #include <unordered_map>
 #include "runner.h"
-#include "config.h"
+#include "server_config.h"
 #include "yaml-cpp/yaml.h"
 #include <memory>
 

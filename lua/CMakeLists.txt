@@ -1,5 +1,0 @@
-
-set(CMAKE_C_STANDARD 99)
-
-AUX_SOURCE_DIRECTORY(. DIR_SRCS)
-add_library(lua ${DIR_SRCS})

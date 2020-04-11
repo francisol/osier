@@ -3,6 +3,11 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/mstch" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third_parts/yaml-cpp" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third_party/CLI11" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third_party/lua" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third_party/sqlite" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third_party/yaml-cpp" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/yaml-cpp" vcs="Git" />
   </component>
 </project>
